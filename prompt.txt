@@ -1,0 +1,31 @@
+saya ingin membuat sebuah website yang berfungsi untuk Personal Learning OS, Tujuannya untuk membantu beban belajar siswa dan administratif Guru
+
+Teknologi yang harus di gunakan di antaranya:
+Frontend: Next.js dan tailwind (gunakan library next.js lainnya untuk membantu desain menjadi interaktif)
+Backend: Gunakan Supabase untuk database dan kebutuhan backend lainnya.
+
+Fitur yang ada pada website ini diantaranya:
+
+-Fitur Login bagi menjadi dua role untuk murid dan untuk guru
+-Interaktif roadmap (dengan menggunakan mermaid.js)
+-akademik dashboard (melacak nilai menggunakan chart.js)
+-smart flashcards (dengan algoritma Spaced repetition)
+-Educator Toolbox (Generator PDF/QR Code secara otomatis (client-side).)
+
+Hak akses:
+Siswa:
+- dashboard: Melihat progres pribadi & estimasi nilai.
+- Pathways: Mengikuti roadmap yang sudah ada.
+- Study Cards: Berlatih Menghapal (Spaced repetition)
+- Toolbox: Mengunduh sertifikat pencapaian.
+Guru:
+- dashboard: Melihat statistik rata-rata progres kelas.
+- Pathways: Membuat, mengedit, dan membagikan roadmap.
+- Study Cards: Membuat bank soal flashcard untuk siswa.
+- Toolbox: Membuat jadwal, QR Code, dan laporan nilai.
+
+Untuk websitenya buat interaktif, akses cepat, dan ramah pengguna.
+
+lalu buatkan sebuah panduan/planning untuk membantu pengembangan dengan model Ai yang lebih murah atau programmer lain, jangan terlalu low level atau detail, Cukup instrusikan secara high level
+
+
