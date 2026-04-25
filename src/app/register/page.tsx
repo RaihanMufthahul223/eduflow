@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   GraduationCap,
@@ -102,8 +103,8 @@ export default function RegisterPage() {
             className="text-center"
           >
             <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
-                <GraduationCap className="h-8 w-8 text-white" />
+              <div className="relative h-16 w-16 overflow-hidden rounded-2xl shadow-xl shadow-black/20">
+                <Image src="/img/logo.jpeg" alt="EduFlow Logo" fill className="object-cover" />
               </div>
             </div>
             <h2 className="text-4xl font-bold text-white mb-4">
@@ -126,8 +127,8 @@ export default function RegisterPage() {
         >
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-primary">
-              <GraduationCap className="h-5 w-5 text-white" />
+            <div className="relative h-9 w-9 overflow-hidden rounded-xl shadow-md">
+              <Image src="/img/logo.jpeg" alt="EduFlow Logo" fill className="object-cover" />
             </div>
             <span className="text-xl font-bold">
               Edu<span className="gradient-text">Flow</span>
@@ -158,7 +159,10 @@ export default function RegisterPage() {
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setRole("siswa")}
+                  onClick={() => {
+                    setRole("siswa");
+                    setClassGroup("");
+                  }}
                   className={cn(
                     "flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200",
                     role === "siswa"
@@ -171,7 +175,10 @@ export default function RegisterPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setRole("guru")}
+                  onClick={() => {
+                    setRole("guru");
+                    setClassGroup("");
+                  }}
                   className={cn(
                     "flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200",
                     role === "guru"
@@ -217,18 +224,21 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="classGroup">
-                Kelas {role === "guru" && "(Wali Kelas)"}
-              </Label>
-              <Input
-                id="classGroup"
-                type="text"
-                placeholder="Contoh: XII-IPA-1"
-                value={classGroup}
-                onChange={(e) => setClassGroup(e.target.value)}
-              />
-            </div>
+            {role === "guru" && (
+              <div className="space-y-2">
+                <Label htmlFor="classGroup">
+                  Kelas (Wali Kelas)
+                </Label>
+                <Input
+                  id="classGroup"
+                  type="text"
+                  placeholder="Contoh: XII-IPA-1"
+                  value={classGroup}
+                  onChange={(e) => setClassGroup(e.target.value)}
+                  required
+                />
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>

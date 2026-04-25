@@ -271,3 +271,63 @@ create policy "Anyone can view schedules"
 create policy "Guru can manage schedules"
   on public.schedules for all
   using (auth.uid() = teacher_id);
+
+-- ============================================
+-- EduFlow Phase 6: Class Code System Update
+-- ============================================
+
+-- 11. Classes table
+create table public.classes (
+  id uuid default uuid_generate_v4() primary key,
+  name text not null unique,
+  invite_code text not null unique,
+  teacher_id uuid references public.profiles(id) on delete set null,
+  created_at timestamptz default now()
+);
+
+alter table public.classes enable row level security;
+
+create policy "Anyone can view classes" on public.classes for select using (true);
+
+-- Trigger to generate Class and Code when a Guru registers
+create or replace function public.handle_new_guru_class()
+returns trigger as $$
+declare
+  new_code text;
+begin
+  if NEW.role = 'guru' and NEW.class_group is not null then
+    -- Generate 6 random alphanumeric characters
+    new_code := upper(substring(md5(random()::text) from 1 for 6));
+    
+    insert into public.classes (name, invite_code, teacher_id)
+    values (NEW.class_group, new_code, NEW.id)
+    on conflict (name) do nothing;
+  end if;
+  return NEW;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_guru_profile_created
+  after insert on public.profiles
+  for each row execute procedure public.handle_new_guru_class();
+
+-- RPC Function for Students to join a class via code
+create or replace function public.join_class_by_code(code text)
+returns boolean as $$
+declare
+  target_class_name text;
+begin
+  select name into target_class_name
+  from public.classes
+  where invite_code = upper(code);
+
+  if target_class_name is not null then
+    update public.profiles
+    set class_group = target_class_name
+    where id = auth.uid();
+    return true;
+  else
+    return false;
+  end if;
+end;
+$$ language plpgsql security definer;

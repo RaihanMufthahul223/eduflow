@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { GraduationCap, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -67,8 +68,8 @@ export default function LoginPage() {
             className="text-center"
           >
             <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
-                <GraduationCap className="h-8 w-8 text-white" />
+              <div className="relative h-16 w-16 overflow-hidden rounded-2xl shadow-xl shadow-black/20">
+                <Image src="/img/logo.jpeg" alt="EduFlow Logo" fill className="object-cover" />
               </div>
             </div>
             <h2 className="text-4xl font-bold text-white mb-4">
@@ -91,8 +92,8 @@ export default function LoginPage() {
         >
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-primary">
-              <GraduationCap className="h-5 w-5 text-white" />
+            <div className="relative h-9 w-9 overflow-hidden rounded-xl shadow-md">
+              <Image src="/img/logo.jpeg" alt="EduFlow Logo" fill className="object-cover" />
             </div>
             <span className="text-xl font-bold">
               Edu<span className="gradient-text">Flow</span>

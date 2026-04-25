@@ -16,6 +16,7 @@ import {
   Rocket,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/theme-provider";
 
@@ -112,8 +113,8 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl px-6 backdrop-blur-xl bg-white/70 dark:bg-slate-950/50 transition-colors duration-500">
           <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-primary shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-                <GraduationCap className="h-5 w-5 text-white" />
+              <div className="relative h-9 w-9 overflow-hidden rounded-xl shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                <Image src="/img/logo.jpeg" alt="EduFlow Logo" fill className="object-cover" />
               </div>
               <span className="text-xl font-bold text-slate-900 dark:text-white transition-colors duration-500">
                 Edu<span className="gradient-text">Flow</span>
@@ -482,8 +483,8 @@ export default function LandingPage() {
       <footer className="border-t border-slate-200 dark:border-white/5 py-10 px-6 bg-white dark:bg-slate-950 transition-colors duration-500">
         <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl gradient-primary shadow-sm">
-              <GraduationCap className="h-4 w-4 text-white" />
+            <div className="relative h-8 w-8 overflow-hidden rounded-xl shadow-sm">
+              <Image src="/img/logo.jpeg" alt="EduFlow Logo" fill className="object-cover" />
             </div>
             <span className="text-base font-bold text-slate-900 dark:text-white transition-colors">EduFlow</span>
           </div>

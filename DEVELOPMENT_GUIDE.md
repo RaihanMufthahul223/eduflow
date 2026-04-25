@@ -147,22 +147,28 @@ Ikuti urutan fase ini. Setiap fase harus selesai dan berfungsi sebelum lanjut ke
 
 ---
 
-### FASE 6: Polish & Deployment
+### FASE 6: Polish & Deployment (Termasuk Sistem Kode Kelas & Branding)
 
-**Goal**: Aplikasi siap production — responsif, cepat, dan bagus.
+**Goal**: Aplikasi siap production — responsif, cepat, aman, dan memiliki *branding* yang baik.
 
 **Instruksi:**
-1. Pastikan semua halaman responsif (mobile, tablet, desktop).
-2. Tambahkan loading skeleton/spinner di setiap halaman yang fetch data.
-3. Tambahkan empty states yang informatif (misal: "Belum ada roadmap").
-4. Tambahkan error handling yang user-friendly (toast notifications).
-5. Implementasi animasi transisi antar halaman dengan Framer Motion.
-6. Support dark mode (Tailwind `dark:` classes + theme toggle).
-7. Optimasi: lazy load chart/mermaid components, image optimization.
-8. Tambah SEO meta tags di setiap halaman.
-9. Deploy ke **Vercel** (connect repo GitHub, set environment variables).
+1. **[UPDATE] Sistem Kode Kelas (Class Code)**:
+   - Implementasi tabel `classes` dengan auto-generate `invite_code` (6 karakter) untuk Guru.
+   - Siswa tidak lagi menginput kelas saat pendaftaran.
+   - Dashboard Siswa yang belum memiliki kelas akan dikunci dan meminta input Kode Kelas untuk bergabung.
+2. **[UPDATE] Branding EduFlow**:
+   - Ganti ikon standar (seperti `GraduationCap`) dengan logo kustom aplikasi di semua halaman utama (Landing, Login, Register, Sidebar).
+3. Pastikan semua halaman responsif (mobile, tablet, desktop).
+4. Tambahkan loading skeleton/spinner di setiap halaman yang fetch data.
+5. Tambahkan empty states yang informatif (misal: "Belum ada roadmap").
+6. Tambahkan error handling yang user-friendly (toast notifications).
+7. Implementasi animasi transisi antar halaman dengan Framer Motion.
+8. Support dark mode (Tailwind `dark:` classes + theme toggle).
+9. Optimasi: lazy load chart/mermaid components, image optimization.
+10. Tambah SEO meta tags di setiap halaman.
+11. Deploy ke **Vercel** (connect repo GitHub, set environment variables).
 
-**Validasi**: Test di mobile, cek Lighthouse score, pastikan semua fitur berjalan di production.
+**Validasi**: Test di mobile, cek Lighthouse score, flow pendaftaran dan gabung kelas via kode berfungsi, logo aplikasi terpasang dengan benar.
 
 ---
 

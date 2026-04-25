@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  GraduationCap,
   LayoutDashboard,
   Map,
   Brain,
@@ -83,7 +83,7 @@ export default function DashboardLayout({
     };
 
     fetchProfile();
-  }, [router]);
+  }, []);
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -120,8 +120,8 @@ export default function DashboardLayout({
         {/* Logo */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-border/50">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-primary shrink-0">
-              <GraduationCap className="h-5 w-5 text-white" />
+            <div className="relative h-9 w-9 overflow-hidden rounded-xl shrink-0">
+              <Image src="/img/logo.jpeg" alt="EduFlow Logo" fill className="object-cover" />
             </div>
             {!collapsed && (
               <span className="text-lg font-bold">
@@ -248,8 +248,8 @@ export default function DashboardLayout({
               <Menu className="h-5 w-5" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg gradient-primary">
-                <GraduationCap className="h-4 w-4 text-white" />
+              <div className="relative h-7 w-7 overflow-hidden rounded-lg">
+                <Image src="/img/logo.jpeg" alt="EduFlow Logo" fill className="object-cover" />
               </div>
               <span className="text-sm font-bold">EduFlow</span>
             </div>
