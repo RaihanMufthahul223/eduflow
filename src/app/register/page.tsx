@@ -30,6 +30,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<Role>("siswa");
   const [classGroup, setClassGroup] = useState("");
+  const [nisn, setNisn] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,6 +39,12 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    if (role === 'siswa' && nisn && nisn.length !== 10) {
+      setError("NISN harus 10 digit angka.");
+      setLoading(false);
+      return;
+    }
 
     if (password.length < 6) {
       setError("Password minimal 6 karakter.");
@@ -55,6 +62,7 @@ export default function RegisterPage() {
             full_name: fullName,
             role,
             class_group: classGroup || null,
+            nisn: role === 'siswa' ? (nisn || null) : null,
           },
         },
       });
@@ -223,6 +231,24 @@ export default function RegisterPage() {
                 />
               </div>
             </div>
+
+            {role === "siswa" && (
+              <div className="space-y-2">
+                <Label htmlFor="nisn">
+                  NISN <span className="text-muted-foreground text-xs">(Opsional)</span>
+                </Label>
+                <Input
+                  id="nisn"
+                  type="text"
+                  placeholder="10 digit NISN"
+                  value={nisn}
+                  onChange={(e) => setNisn(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                  maxLength={10}
+                  pattern="[0-9]{10}"
+                />
+                <p className="text-xs text-muted-foreground">NISN diperlukan agar guru dapat import nilai via CSV.</p>
+              </div>
+            )}
 
             {role === "guru" && (
               <div className="space-y-2">

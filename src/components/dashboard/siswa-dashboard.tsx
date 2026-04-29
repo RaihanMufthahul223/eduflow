@@ -42,7 +42,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 
 const container = {
@@ -54,11 +54,12 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
-const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun"]; // This could be dynamic based on the data if needed
+// const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun"]; // This could be dynamic based on the data if needed
 
 interface SiswaDashboardProps {
   classGroup: string | null;
-  grades: { subject: string; scores: number[] }[];
+  chartLabels: string[];
+  grades: { subject: string; scores: (number | null)[]; rawScores: number[] }[];
   avgScore: number;
   prevAvg: number;
   trend: number;
@@ -70,6 +71,7 @@ interface SiswaDashboardProps {
 
 export function SiswaDashboard({
   classGroup,
+  chartLabels,
   grades,
   avgScore,
   trend,
@@ -88,20 +90,22 @@ export function SiswaDashboard({
       toast.error("Kode kelas harus 6 karakter");
       return;
     }
-    
+
     setIsJoining(true);
     const supabase = createClient();
-    const { data, error } = await supabase.rpc("join_class_by_code", { code: joinCode });
-    
+    const { data, error } = await supabase.rpc("join_class_by_code", {
+      code: joinCode,
+    });
+
     if (error) {
       toast.error("Terjadi kesalahan sistem.");
       setIsJoining(false);
       return;
     }
-    
+
     if (data) {
       toast.success("Berhasil bergabung ke kelas!");
-      router.refresh(); 
+      router.refresh();
     } else {
       toast.error("Kode kelas tidak valid atau tidak ditemukan.");
       setIsJoining(false);
@@ -146,17 +150,14 @@ export function SiswaDashboard({
   ];
 
   const lineData = {
-    labels: months,
+    labels: chartLabels.length > 0 ? chartLabels : ["Belum ada data"],
     datasets: grades.map((s, i) => ({
       label: s.subject,
       data: s.scores,
-      borderColor: [
-        "#6366f1",
-        "#06b6d4",
-        "#f59e0b",
-        "#10b981",
-        "#ec4899",
-      ][i % 5],
+      spanGaps: true,
+      borderColor: ["#6366f1", "#06b6d4", "#f59e0b", "#10b981", "#ec4899"][
+        i % 5
+      ],
       backgroundColor: [
         "rgba(99,102,241,0.1)",
         "rgba(6,182,212,0.1)",
@@ -177,7 +178,7 @@ export function SiswaDashboard({
     datasets: [
       {
         label: "Nilai Terbaru",
-        data: grades.map((s) => s.scores[s.scores.length - 1] || 0),
+        data: grades.map((s) => s.rawScores[s.rawScores.length - 1] || 0),
         backgroundColor: [
           "rgba(99,102,241,0.8)",
           "rgba(6,182,212,0.8)",
@@ -221,7 +222,7 @@ export function SiswaDashboard({
   if (!classGroup) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-md w-full p-8 bg-card border border-border/50 rounded-3xl shadow-xl text-center space-y-6"
@@ -229,23 +230,35 @@ export function SiswaDashboard({
           <div className="mx-auto w-16 h-16 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-6 text-indigo-500">
             <BookOpen className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground">Bergabung ke Kelas</h2>
+          <h2 className="text-2xl font-bold text-foreground">
+            Bergabung ke Kelas
+          </h2>
           <p className="text-muted-foreground">
-            Kamu belum terdaftar di kelas manapun. Silakan masukkan Kode Kelas (6 Karakter) dari Guru kamu untuk bergabung.
+            Kamu belum terdaftar di kelas manapun. Silakan masukkan Kode Kelas
+            (6 Karakter) dari Guru kamu untuk bergabung.
           </p>
-          
+
           <form onSubmit={handleJoinClass} className="space-y-4 pt-4">
-            <Input 
-              placeholder="Contoh: X7A9K2" 
+            <Input
+              placeholder="Contoh: X7A9K2"
               value={joinCode}
               onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
               className="text-center text-lg tracking-widest uppercase font-bold h-14 rounded-xl"
               maxLength={6}
             />
-            <Button type="submit" size="lg" className="w-full rounded-xl" disabled={isJoining || joinCode.length !== 6}>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full rounded-xl"
+              disabled={isJoining || joinCode.length !== 6}
+            >
               {isJoining ? (
-                <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Memproses...</>
-              ) : "Gabung Sekarang"}
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Memproses...
+                </>
+              ) : (
+                "Gabung Sekarang"
+              )}
             </Button>
           </form>
         </motion.div>
@@ -318,23 +331,28 @@ export function SiswaDashboard({
                 <CardTitle className="text-base">
                   Nilai Terbaru per Mapel
                 </CardTitle>
-                {grades.length > 0 && <Badge className={badge.color}>{badge.label}</Badge>}
+                {grades.length > 0 && (
+                  <Badge className={badge.color}>{badge.label}</Badge>
+                )}
               </div>
             </CardHeader>
             <CardContent>
               <div className="h-72">
                 {grades.length > 0 ? (
-                    <Bar
+                  <Bar
                     data={barData}
                     options={{
-                        ...chartOptions,
-                        plugins: { ...chartOptions.plugins, legend: { display: false } },
+                      ...chartOptions,
+                      plugins: {
+                        ...chartOptions.plugins,
+                        legend: { display: false },
+                      },
                     }}
-                    />
+                  />
                 ) : (
-                    <div className="flex items-center justify-center h-full text-muted-foreground">
-                        Belum ada data nilai
-                    </div>
+                  <div className="flex items-center justify-center h-full text-muted-foreground">
+                    Belum ada data nilai
+                  </div>
                 )}
               </div>
             </CardContent>
@@ -368,54 +386,59 @@ export function SiswaDashboard({
                   </tr>
                 </thead>
                 <tbody>
-                  {grades.length > 0 ? grades.map((s) => {
-                    const latest = s.scores[s.scores.length - 1] || 0;
-                    const prev = s.scores[s.scores.length - 2] || 0;
-                    const diff = latest - prev;
-                    const b = getScoreBadge(latest);
-                    return (
-                      <tr
-                        key={s.subject}
-                        className="border-b border-border/30 last:border-0"
-                      >
-                        <td className="py-3 px-4 font-medium">{s.subject}</td>
-                        <td className="py-3 px-4 text-center font-semibold">
-                          {latest}
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <Badge className={b.color}>{b.label}</Badge>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          {s.scores.length > 1 ? (
+                  {grades.length > 0 ? (
+                    grades.map((s) => {
+                      const latest = s.rawScores[s.rawScores.length - 1] || 0;
+                      const prev = s.rawScores[s.rawScores.length - 2] || 0;
+                      const diff = latest - prev;
+                      const b = getScoreBadge(latest);
+                      return (
+                        <tr
+                          key={s.subject}
+                          className="border-b border-border/30 last:border-0"
+                        >
+                          <td className="py-3 px-4 font-medium">{s.subject}</td>
+                          <td className="py-3 px-4 text-center font-semibold">
+                            {latest}
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <Badge className={b.color}>{b.label}</Badge>
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            {s.scores.length > 1 ? (
                               <span
                                 className={`inline-flex items-center gap-1 text-xs font-medium ${
-                                diff > 0
+                                  diff > 0
                                     ? "text-emerald-500"
                                     : diff < 0
-                                    ? "text-red-500"
-                                    : "text-muted-foreground"
+                                      ? "text-red-500"
+                                      : "text-muted-foreground"
                                 }`}
-                            >
+                              >
                                 {diff > 0 ? (
-                                <TrendingUp className="h-3 w-3" />
+                                  <TrendingUp className="h-3 w-3" />
                                 ) : diff < 0 ? (
-                                <TrendingDown className="h-3 w-3" />
+                                  <TrendingDown className="h-3 w-3" />
                                 ) : null}
                                 {diff > 0 ? "+" : ""}
                                 {diff}
-                            </span>
-                          ) : (
+                              </span>
+                            ) : (
                               <span className="text-muted-foreground">-</span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  }) : (
-                      <tr>
-                          <td colSpan={4} className="text-center py-8 text-muted-foreground">
-                              Belum ada data nilai
+                            )}
                           </td>
-                      </tr>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="text-center py-8 text-muted-foreground"
+                      >
+                        Belum ada data nilai
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>

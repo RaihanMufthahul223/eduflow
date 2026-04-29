@@ -13,8 +13,12 @@ create table public.profiles (
   role text not null check (role in ('siswa', 'guru')),
   avatar_url text,
   class_group text,
+  nisn text unique,                          -- Nomor Induk Siswa Nasional (hanya siswa)
   created_at timestamptz default now()
 );
+
+-- Migration: jika tabel sudah ada, tambahkan kolom nisn
+-- alter table public.profiles add column if not exists nisn text unique;
 
 alter table public.profiles enable row level security;
 
@@ -46,12 +50,13 @@ create policy "Guru can view class profiles"
 create or replace function public.handle_new_user()
 returns trigger as $$
 begin
-  insert into public.profiles (id, full_name, role, class_group)
+  insert into public.profiles (id, full_name, role, class_group, nisn)
   values (
     new.id,
     coalesce(new.raw_user_meta_data->>'full_name', 'User'),
     coalesce(new.raw_user_meta_data->>'role', 'siswa'),
-    new.raw_user_meta_data->>'class_group'
+    new.raw_user_meta_data->>'class_group',
+    new.raw_user_meta_data->>'nisn'
   );
   return new;
 end;

@@ -6,6 +6,7 @@ export interface Profile {
   role: UserRole;
   avatar_url: string | null;
   class_group: string | null;
+  nisn: string | null;
   created_at: string;
 }
 
